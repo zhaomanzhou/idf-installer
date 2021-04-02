@@ -273,7 +273,7 @@ install_basic() {
   apt-get update
   # 安装必要软件
 
-  if ! apt install vim net-tools socat wget unzip nginx -y; then
+  if ! apt install vim net-tools socat wget curl unzip nginx -y; then
     error "安装vim net-tools wget unzip nginx失败"
     exit 1
   fi
