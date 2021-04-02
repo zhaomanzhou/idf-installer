@@ -8,13 +8,20 @@ cyan='\e[96m'
 none='\e[0m'
 
 nginx_conf_simple() {
+
+  local that_port=80
+  if [ $# -gt 0 ]; then
+      read -p "请输入http端口" that_port
+  fi
+  systemctl enable nginx;
+  systemctl start nginx;
+
   cd /etc/nginx/conf.d
   cat >v2ray-manager.conf <<-EOF
 server {
 
-  listen 80 ;
+  listen $that_port ;
   server_name $this_server_name; #修改为自己的IP/域名
-  root /opt/jar/web;
 
   location /api {
     proxy_pass http://127.0.0.1:9091/;
@@ -115,11 +122,14 @@ dns_https() {
   else
     curl https://get.acme.sh | sh
     alias acme.sh=~/.acme.sh/acme.sh
-    echo 'alias acme.sh=~/.acme.sh/acme.sh' >>/etc/profile
+    if [[ -z `cat /etc/profile | grep  'acme.sh'` ]]; then
+      echo 'alias acme.sh=~/.acme.sh/acme.sh' >>/etc/profile
+    fi
     source /etc/profile
     00 00 * * * root /root/.acme.sh/acme.sh --cron --home /root/.acme.sh &>/var/log/acme.sh.logs
-    mkdir -p /etc/nginx/ssl_cert/$this_server_name
   fi
+
+  mkdir -p /etc/nginx/ssl_cert/$this_server_name
   /root/.acme.sh/acme.sh --issue --dns -d $this_server_name --yes-I-know-dns-manual-mode-enough-go-ahead-please
 
   read -p "按任意键继续" nonUsed
@@ -143,13 +153,14 @@ auto_install_https() {
   if [[ -e /root/.acme.sh/acme.sh ]]; then
     echo "监测到已经安装过acme，跳过acme安装"
   else
+    echo "开始安装acme"
     curl https://get.acme.sh | sh
     alias acme.sh=~/.acme.sh/acme.sh
     echo 'alias acme.sh=~/.acme.sh/acme.sh' >>/etc/profile
     source /etc/profile
     00 00 * * * root /root/.acme.sh/acme.sh --cron --home /root/.acme.sh &>/var/log/acme.sh.logs
-    mkdir -p /etc/nginx/ssl_cert/$this_server_name
   fi
+    mkdir -p /etc/nginx/ssl_cert/$this_server_name
 
 
   if ! "$HOME"/.acme.sh/acme.sh --issue -d $this_server_name --nginx; then
@@ -166,10 +177,7 @@ auto_install_https() {
 
 install_vmanager() {
 
-  if ! apt install   openjdk-8-jre  -y; then
-    error "安装openjk-8出错"
-    return 111
-  fi
+
   # 安装v2ray -来源官网新版
   bash <(curl -L -s https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)
 
@@ -273,7 +281,7 @@ install_basic() {
   apt-get update
   # 安装必要软件
 
-  if ! apt install vim net-tools socat wget curl unzip nginx -y; then
+  if ! apt install vim net-tools socat wget curl unzip  openjdk-8-jre  nginx -y; then
     error "安装vim net-tools wget unzip nginx失败"
     exit 1
   fi
@@ -302,6 +310,8 @@ menu() {
           echo "6.安装v2ray和中间件"
           echo "7.查看nginx日志"
           echo "8.查看中间件日志"
+          echo "9.开启bbr"
+          echo "10.一键安装全部，dns校验"
           echo "0.退出"
           read -p ">:" choice
           case $choice in
@@ -325,7 +335,7 @@ menu() {
             install_basic
             ;;
           3)
-              nginx_conf_simple
+              nginx_conf_simple ask
             ;;
           4)
             nginx_conf_simple
@@ -346,8 +356,39 @@ menu() {
           8)
               tail -f /opt/jar/logs/v2ray-proxy.log
             ;;
+          9)
+
+            if [[ -n $(lsmod | grep bbr) ]]; then
+              echo "bbr 已开启 "
+              continue;
+            fi
+
+            echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
+            echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
+            sysctl   -p
+            echo "查看是否开启"
+            sysctl net.ipv4.tcp_available_congestion_control
+            echo "查看是否启动"
+            lsmod | grep bbr
+            ;;
           0)
             exit 0;
+            ;;
+          10)
+            if ! install_basic ; then
+              continue ;
+            fi
+
+
+            if ! nginx_conf_simple; then
+              continue;
+            fi
+
+            if ! dns_https; then
+              continue;
+            fi
+            install_vmanager
+            install_service
             ;;
           *)
             error
