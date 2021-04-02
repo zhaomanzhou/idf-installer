@@ -262,7 +262,8 @@ menu() {
 
   for ((;;));do
           echo "1.一键安装全部"
-          echo "2.安装nginx   http验证tls"
+          echo "2.安装nginx   不安装证书"
+          echo "3.安装nginx   dns验证tls"
           echo "3.安装nginx   dns验证tls"
           echo "4.安装v2ray和中间件"
           echo "0.退出"
@@ -270,26 +271,39 @@ menu() {
           case $choice in
           1)
             if ! install_basic ; then
-              return ;
+              continue ;
             fi
 
 
             if ! nginx_conf_simple; then
-              return;
+              continue;
             fi
 
-            auto_install_https
+            if ! auto_install_https; then
+              continue;
+            fi
             install_vmanager
             install_service
             ;;
           2)
-            install_basic
+            if ! install_basic ; then
+              continue ;
+            fi
+              nginx_conf_simple
+            ;;
+          3)
+            if ! install_basic ; then
+              continue ;
+            fi
             nginx_conf_simple
             auto_install_https
             ;;
-          3)
+          4)
+            if ! install_basic ; then
+              continue ;
+            fi
             nginx_conf_simple
-
+            dns_https
             ;;
           4)
             install_vmanager
