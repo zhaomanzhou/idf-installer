@@ -41,6 +41,12 @@ EOF
 
 
 install_cer_after_verify() {
+
+    local that_port=443
+    if [ $# -gt 0 ]; then
+      that_port=$1
+    fi
+
   "$HOME"/.acme.sh/acme.sh --install-cert -d ${this_server_name} \
     --key-file /etc/nginx/ssl_cert/${this_server_name}/${this_server_name}.key \
     --fullchain-file /etc/nginx/ssl_cert/${this_server_name}/${this_server_name}.cer \
@@ -48,9 +54,12 @@ install_cer_after_verify() {
 
   cd /etc/nginx/conf.d || return
   rm -f v2ray-manager.conf
+
+  mkdir -p /var/www/letsencrypt
+
   cat >v2ray-manager.conf <<-EOF
 server {
-    listen 443 ssl http2;
+    listen $that_port ssl http2;
     server_name $this_server_name;
     root /opt/jar/web;
     ssl_certificate       /etc/nginx/ssl_cert/${this_server_name}/${this_server_name}.cer;
@@ -77,14 +86,28 @@ server {
 
 server {
     listen 80;
-    server_name $this_server_name;
-    rewrite ^(.*)\$ https://\${server_name}\$1 permanent;
+    server_name ${this_server_name};
+    location /.well-known/acme-challenge {
+                root /var/www/letsencrypt;
+        }
+
+        location / {
+                return 301 https://\$host\$request_uri;
+        }
 }
 
 EOF
 }
 
 dns_https() {
+
+  declare nginx_https_port;
+  read -p "请输入https端口" nginx_https_port
+
+  if [ -z $nginx_https_port ]; then
+    nginx_https_port=443
+  fi
+
   if [[ -e /root/.acme.sh/acme.sh ]]; then
     echo "监测到已经安装过acme，跳过acme安装"
   else
@@ -103,7 +126,7 @@ dns_https() {
       echo "--------------------------"
       echo "验证成功"
       echo "--------------------------"
-      install_cer_after_verify
+      install_cer_after_verify $nginx_https_port
   else
       error "------------------------------"
       error "dns验证证书失败"
@@ -235,7 +258,7 @@ EOF
 error() {
 
   local message="输入错误！"
-  if [ $# -eq 0 ]; then
+  if [ $# -gt 0 ]; then
     message=$1
   fi
 	echo -e "\n$red $message $none\n"
