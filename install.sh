@@ -104,7 +104,9 @@ dns_https() {
   declare nginx_https_port;
   read -p "请输入https端口" nginx_https_port
 
+
   if [ -z $nginx_https_port ]; then
+    echo "https端口设置为默认443"
     nginx_https_port=443
   fi
 
@@ -120,6 +122,7 @@ dns_https() {
   fi
   /root/.acme.sh/acme.sh --issue --dns -d $this_server_name --yes-I-know-dns-manual-mode-enough-go-ahead-please
 
+  read -p "按任意键继续" nonUsed
   read -p "按任意键继续" nonUsed
 
   if /root/.acme.sh/acme.sh --renew -d $this_server_name --yes-I-know-dns-manual-mode-enough-go-ahead-please; then
@@ -292,11 +295,13 @@ menu() {
 
   for ((;;));do
           echo "1.一键安装全部"
-          echo "2.安装nginx   不安装证书"
-          echo "3.安装nginx   http验证tls"
-          echo "4.安装nginx   dns验证tls"
-          echo "5.安装v2ray和中间件"
-          echo "6.安装基本环境"
+          echo "2.安装基本环境"
+          echo "3.安装nginx   不安装证书"
+          echo "4.http安装nginx证书"
+          echo "5.dns安装ngin证书"
+          echo "6.安装v2ray和中间件"
+          echo "7.查看nginx日志"
+          echo "8.查看中间件日志"
           echo "0.退出"
           read -p ">:" choice
           case $choice in
@@ -317,22 +322,29 @@ menu() {
             install_service
             ;;
           2)
-              nginx_conf_simple
+            install_basic
             ;;
           3)
-            nginx_conf_simple
-            auto_install_https
+              nginx_conf_simple
             ;;
           4)
             nginx_conf_simple
-            dns_https
+            auto_install_https
             ;;
           5)
+            nginx_conf_simple
+            dns_https
+            ;;
+          6)
             install_vmanager
             install_service
             ;;
-          6)
-            install_basic
+
+          7)
+              tail -f /var/log/nginx/access.log
+            ;;
+          8)
+              tail -f /opt/jar/logs/v2ray-proxy.log
             ;;
           0)
             exit 0;
