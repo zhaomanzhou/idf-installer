@@ -97,6 +97,8 @@ dns_https() {
   fi
   /root/.acme.sh/acme.sh --issue --dns -d $this_server_name --yes-I-know-dns-manual-mode-enough-go-ahead-please
 
+  read -p "按任意键继续" nonUsed
+
   if /root/.acme.sh/acme.sh --renew -d $this_server_name --yes-I-know-dns-manual-mode-enough-go-ahead-please; then
       echo "--------------------------"
       echo "验证成功"
