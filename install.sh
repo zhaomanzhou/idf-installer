@@ -1,6 +1,11 @@
 #! /bin/bash
 
-
+red='\e[91m'
+green='\e[92m'
+yellow='\e[93m'
+magenta='\e[95m'
+cyan='\e[96m'
+none='\e[0m'
 
 nginx_conf_simple() {
   cd /etc/nginx/conf.d
@@ -41,7 +46,7 @@ install_cer_after_verify() {
     --fullchain-file /etc/nginx/ssl_cert/${this_server_name}/${this_server_name}.cer \
     --reloadcmd "service nginx force-reload"
 
-  cd /etc/nginx/conf.d
+  cd /etc/nginx/conf.d || return
   rm -f v2ray-manager.conf
   cat >v2ray-manager.conf <<-EOF
 server {
@@ -90,9 +95,9 @@ dns_https() {
     00 00 * * * root /root/.acme.sh/acme.sh --cron --home /root/.acme.sh &>/var/log/acme.sh.logs
     mkdir -p /etc/nginx/ssl_cert/$this_server_name
   fi
-  acme.sh --issue --dns -d $this_server_name --yes-I-know-dns-manual-mode-enough-go-ahead-please
+  /root/.acme.sh/acme.sh --issue --dns -d $this_server_name --yes-I-know-dns-manual-mode-enough-go-ahead-please
 
-  if acme.sh --renew -d $this_server_name --yes-I-know-dns-manual-mode-enough-go-ahead-please; then
+  if /root/.acme.sh/acme.sh --renew -d $this_server_name --yes-I-know-dns-manual-mode-enough-go-ahead-please; then
       echo "--------------------------"
       echo "验证成功"
       echo "--------------------------"
@@ -133,7 +138,7 @@ auto_install_https() {
 
 install_vmanager() {
 
-  if ! apt install  socat openjdk-8-jre  -y; then
+  if ! apt install   openjdk-8-jre  -y; then
     error "安装openjk-8出错"
     return 111
   fi
@@ -231,7 +236,7 @@ error() {
   if [ $# -eq 0 ]; then
     message=$1
   fi
-	echo -e "\n$red $none\n"
+	echo -e "\n$red $message $none\n"
 
 }
 
@@ -240,7 +245,7 @@ install_basic() {
   apt-get update
   # 安装必要软件
 
-  if ! apt install vim net-tools wget unzip nginx -y; then
+  if ! apt install vim net-tools socat wget unzip nginx -y; then
     error "安装vim net-tools wget unzip nginx失败"
     exit 1
   fi
@@ -266,6 +271,7 @@ menu() {
           echo "3.安装nginx   http验证tls"
           echo "4.安装nginx   dns验证tls"
           echo "5.安装v2ray和中间件"
+          echo "6.安装基本环境"
           echo "0.退出"
           read -p ">:" choice
           case $choice in
@@ -286,29 +292,22 @@ menu() {
             install_service
             ;;
           2)
-            if ! install_basic ; then
-              continue ;
-            fi
               nginx_conf_simple
             ;;
           3)
-            if ! install_basic ; then
-              continue ;
-            fi
             nginx_conf_simple
             auto_install_https
             ;;
           4)
-            if ! install_basic ; then
-              continue ;
-            fi
             nginx_conf_simple
             dns_https
             ;;
           5)
             install_vmanager
             install_service
-            uninstall
+            ;;
+          6)
+            install_basic
             ;;
           0)
             exit 0;
