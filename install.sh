@@ -263,9 +263,9 @@ menu() {
   for ((;;));do
           echo "1.一键安装全部"
           echo "2.安装nginx   不安装证书"
-          echo "3.安装nginx   dns验证tls"
-          echo "3.安装nginx   dns验证tls"
-          echo "4.安装v2ray和中间件"
+          echo "3.安装nginx   http验证tls"
+          echo "4.安装nginx   dns验证tls"
+          echo "5.安装v2ray和中间件"
           echo "0.退出"
           read -p ">:" choice
           case $choice in
@@ -305,7 +305,7 @@ menu() {
             nginx_conf_simple
             dns_https
             ;;
-          4)
+          5)
             install_vmanager
             install_service
             uninstall
