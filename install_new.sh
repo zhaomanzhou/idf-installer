@@ -27,7 +27,7 @@ server {
     proxy_pass http://127.0.0.1:9091/;
   }
 
-  location /ws/ {
+  location /idf/ {
     proxy_redirect off;
     proxy_pass http://127.0.0.1:8081;
     proxy_http_version 1.1;
@@ -64,24 +64,24 @@ install_cer_after_verify() {
 
   mkdir -p /var/www/letsencrypt
 
+  chmod a+w /var/www/letsencrypt
+
   cat >v2ray-manager.conf <<-EOF
 server {
     listen $that_port ssl http2;
     server_name $this_server_name;
-    root /opt/jar/web;
+    root /opt/idf/web;
     ssl_certificate       /etc/nginx/ssl_cert/${this_server_name}/${this_server_name}.cer;
     ssl_certificate_key   /etc/nginx/ssl_cert/${this_server_name}/${this_server_name}.key;
     ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
     ssl_ciphers TLS13-AES-128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
 
 
-    location /api {
-        proxy_pass http://127.0.0.1:9091/;
-    }
 
-    location /ws/ {
+
+    location /idf/ {
         proxy_redirect off;
-        proxy_pass http://127.0.0.1:8081;
+        proxy_pass http://127.0.0.1:8888;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -104,6 +104,8 @@ server {
 }
 
 EOF
+
+nginx -s reload
 }
 
 dns_https() {
@@ -181,91 +183,89 @@ install_vmanager() {
   # 安装v2ray -来源官网新版
   bash <(curl -L -s https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)
 
+  mkdir /opt/idf -p
+  cd /opt/idf
 
-  mkdir /opt/jar -p
-  cd /opt/jar
 
-  # 下载releases包
-  wget -c https://glare.now.sh/master-coder-ll/v2ray-web-manager/v2ray-proxy -O v2ray-proxy.jar
+  wget -c https://github.com/zhaomanzhou/idf-manager/releases/download/0.2/idf-proxy-2.0.jar  -O proxy.jar
 
-  # 下载代理服务的配置文件
-  wget -c --no-check-certificate https://raw.githubusercontent.com/master-coder-ll/v2ray-web-manager/master/conf/proxy.yaml
 
-  sed -i 's/authPassword/authPassword: 6dbty9rA$ #/g' proxy.yaml
-  sed -i 's/127.0.0.1/idofast.com/g' proxy.yaml
+
   # 下载v2ray的专用配置文件
-  wget -c --no-check-certificate https://raw.githubusercontent.com/master-coder-ll/v2ray-web-manager/master/conf/config.json
+  wget https://raw.githubusercontent.com/zhaomanzhou/idf-manager/master/idf-proxy/src/main/resources/application-prod.yaml
+
+  sed -i "s/agajp.idofast.com/${this_server_name}/g" application-prod.yaml
+
+
+  wget -c --no-check-certificate https://raw.githubusercontent.com/zhaomanzhou/idf-manager/master/idf-proxy/src/main/resources/config.json
 
   mv /usr/local/etc/v2ray/config.json /usr/local/etc/v2ray/config.json.bak
 
   # 复制配置到v2ray目录
-  cp /opt/jar/config.json /usr/local/etc/v2ray/
+  cp /opt/idf/config.json /usr/local/etc/v2ray/
+
 
   # 重启v2ray
-  service v2ray restart
+  systemctl restart v2ray
 }
 
 install_service() {
 
 
-  if [ -e /opt/jar/v2panel-start.sh ]; then
+  if [ -e /opt/idf/v2-start.sh ]; then
     error "已将安装过v2panel脚本和服务"
     return 11
   fi
 
 
-  cat >/opt/jar/v2panel-start.sh <<-EOF
+ cat > /opt/idf/v2-start.sh <<-EOF
 #!/bin/sh
-nohup java -jar  /opt/jar/v2ray-proxy.jar --spring.config.location=/opt/jar/proxy.yaml > /dev/null 2>&1 &
+cd /opt/idf
+nohup java -jar  /opt/idf/proxy.jar --spring.profiles.active=prod > /dev/null 2>&1 &
 echo \$! > /var/run/v2ray-proxy.pid
 EOF
 
-  cat >/opt/jar/v2panel-stop.sh <<-EOF
+  cat > /opt/idf/v2-stop.sh <<-EOF
 #!/bin/sh
-PID1=\${cat /var/run/v2ray-admin.pid}
-kill -15 $PID1
 PID2=\${cat /var/run/v2ray-proxy.pid}
 kill -15 $PID2
 EOF
 
-  cat >/etc/systemd/system/v2panel.service <<-EOF
+
+  cat > /etc/systemd/system/proxy.service <<-EOF
 [Unit]
-Description=v2ray-web-manager
+Description=idf-manager
 After=network.target network-online.target nss-lookup.target mysql.service mariadb.service mysqld.service
 [Service]
 Type=forking
 StandardError=journal
-ExecStart=/opt/jar/v2panel-start.sh
-ExecStop=/opt/jar/v2panel-stop.sh
+ExecStart=/opt/idf/v2-start.sh
+ExecStop=/opt/idf/v2-stop.sh
 [Install]
 WantedBy=multi-user.target
 EOF
 
-  chmod a+x /opt/jar/v2panel-start.sh
-  chmod a+x /opt/jar/v2panel-stop.sh
+systemctl daemon-reload
+  chmod a+x /opt/idf/v2-start.sh
+  chmod a+x /opt/idf/v2-stop.sh
 
-  alias start='systemctl start v2panel'
-  alias stop='systemctl stop v2panel'
-  alias status='systemctl status v2panel'
+  alias start='systemctl start proxy'
+  alias stop='systemctl stop proxy'
+  alias status='systemctl status proxy'
 
+  echo 'alias start="'"systemctl start proxy"'"' >>/etc/profile
 
+  echo 'alias stop="'"systemctl stop proxy"'"' >>/etc/profile
 
-  echo 'alias start="'"systemctl start v2panel"'"' >>/etc/profile
-
-  echo 'alias stop="'"systemctl stop v2panel"'"' >>/etc/profile
-
-  echo 'alias status="'"systemctl status v2panel"'"' >>/etc/profile
+  echo 'alias status="'"systemctl status proxy"'"' >>/etc/profile
 
   source /etc/profile
-
+  systemctl enable nginx
   systemctl enable v2ray
-  systemctl enable v2panel
-
-  systemctl start v2panel
-  systemctl start v2ray
+  systemctl enable proxy
 
 
-  echo "0 0 */3 * * /sbin/shutdown -r" >>/var/spool/cron/crontabs/root
+  #echo "0 0 */3 * * /sbin/shutdown -r" >>/var/spool/cron/crontabs/root
   systemctl restart cron
 
 }
@@ -301,7 +301,7 @@ install_basic() {
   apt-get update
   # 安装必要软件
 
-  if ! apt install vim net-tools socat wget curl unzip  openjdk-8-jre  nginx -y; then
+  if ! apt install vim net-tools socat wget curl unzip  openjdk-11-jdk  nginx -y; then
     error "安装vim net-tools wget unzip nginx失败"
     exit 1
   fi

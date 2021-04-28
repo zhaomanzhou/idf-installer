@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f810981d-8737-4b42-82c8-41480bc4c8f3" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/install_new.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/install.sh" beforeDir="false" afterPath="$PROJECT_DIR$/install.sh" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1qbJRFAqZUDirywOrsBMyToXFBL" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="test.sh" type="BashProRunConfiguration" temporary="true">
+      <option name="scriptPath" value="$PROJECT_DIR$/test.sh" />
+      <RunnerSettings bashdbVersion="Automatic" bashPathMapper="Automatic" RunnerId="pro.bashsupport.shDebugRunner" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="BashSupport Pro.test.sh" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f810981d-8737-4b42-82c8-41480bc4c8f3" name="Default Changelist" comment="" />
+      <created>1617342346869</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1617342346869</updated>
+      <workItem from="1617342348235" duration="1583000" />
+      <workItem from="1617346377615" duration="291000" />
+      <workItem from="1617346676972" duration="88000" />
+      <workItem from="1617346782417" duration="77000" />
+      <workItem from="1617346887100" duration="3876000" />
+      <workItem from="1617369626794" duration="6495000" />
+      <workItem from="1618824021690" duration="625000" />
+      <workItem from="1619583056277" duration="1027000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="611" y="264" key="#HTTP_Proxy" timestamp="1617346426927">
+      <screen x="54" y="23" width="1738" height="1097" />
+    </state>
+    <state x="611" y="264" key="#HTTP_Proxy/54.23.1738.1097@54.23.1738.1097" timestamp="1617346426927" />
+    <state x="758" y="433" key="#Other_File_Types" timestamp="1617347063210">
+      <screen x="54" y="23" width="1738" height="1097" />
+    </state>
+    <state x="758" y="433" key="#Other_File_Types/54.23.1738.1097@54.23.1738.1097" timestamp="1617347063210" />
+    <state x="523" y="219" key="#Plugins" timestamp="1617346856596">
+      <screen x="54" y="23" width="1738" height="1097" />
+    </state>
+    <state x="523" y="219" key="#Plugins/54.23.1738.1097@54.23.1738.1097" timestamp="1617346856596" />
+    <state width="1716" height="303" key="GridCell.Tab.0.bottom" timestamp="1617528411425">
+      <screen x="54" y="23" width="1738" height="1097" />
+    </state>
+    <state width="1716" height="303" key="GridCell.Tab.0.bottom/54.23.1738.1097@54.23.1738.1097" timestamp="1617528411425" />
+    <state width="1716" height="303" key="GridCell.Tab.0.center" timestamp="1617528411424">
+      <screen x="54" y="23" width="1738" height="1097" />
+    </state>
+    <state width="1716" height="303" key="GridCell.Tab.0.center/54.23.1738.1097@54.23.1738.1097" timestamp="1617528411424" />
+    <state width="1716" height="303" key="GridCell.Tab.0.left" timestamp="1617528411424">
+      <screen x="54" y="23" width="1738" height="1097" />
+    </state>
+    <state width="1716" height="303" key="GridCell.Tab.0.left/54.23.1738.1097@54.23.1738.1097" timestamp="1617528411424" />
+    <state width="1716" height="303" key="GridCell.Tab.0.right" timestamp="1617528411425">
+      <screen x="54" y="23" width="1738" height="1097" />
+    </state>
+    <state width="1716" height="303" key="GridCell.Tab.0.right/54.23.1738.1097@54.23.1738.1097" timestamp="1617528411425" />
+    <state x="425" y="210" key="SettingsEditor" timestamp="1617347015923">
+      <screen x="54" y="23" width="1738" height="1097" />
+    </state>
+    <state x="425" y="210" key="SettingsEditor/54.23.1738.1097@54.23.1738.1097" timestamp="1617347015923" />
+  </component>
+</project>
