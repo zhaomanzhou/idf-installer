@@ -20,8 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f810981d-8737-4b42-82c8-41480bc4c8f3" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/install_new.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/install.sh" beforeDir="false" afterPath="$PROJECT_DIR$/install.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +76,8 @@
       <workItem from="1617346887100" duration="3876000" />
       <workItem from="1617369626794" duration="6495000" />
       <workItem from="1618824021690" duration="625000" />
-      <workItem from="1619583056277" duration="1027000" />
+      <workItem from="1619583056277" duration="1397000" />
+      <workItem from="1619667897818" duration="11000" />
     </task>
     <servers />
   </component>
@@ -94,6 +94,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="611" y="264" key="#HTTP_Proxy" timestamp="1617346426927">

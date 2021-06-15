@@ -161,6 +161,7 @@ auto_install_https() {
     echo 'alias acme.sh=~/.acme.sh/acme.sh' >>/etc/profile
     source /etc/profile
     00 00 * * * root /root/.acme.sh/acme.sh --cron --home /root/.acme.sh &>/var/log/acme.sh.logs
+    /root/.acme.sh/acme.sh --register-account -m zmzsstreet@gmail.com
   fi
     mkdir -p /etc/nginx/ssl_cert/$this_server_name
 
