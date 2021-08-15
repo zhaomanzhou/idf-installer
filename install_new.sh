@@ -166,7 +166,7 @@ auto_install_https() {
     mkdir -p /etc/nginx/ssl_cert/$this_server_name
 
 
-  if ! "$HOME"/.acme.sh/acme.sh --issue -d $this_server_name --nginx; then
+  if ! "$HOME"/.acme.sh/acme.sh --issue -d $this_server_name --nginx /etc/nginx/conf.d/v2ray-manager.conf ; then
     error "------------------------------"
     error "http验证证书失败"
     error "------------------------------"
